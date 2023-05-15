@@ -1,0 +1,2 @@
+邮箱形式集成多个工具的平台
+docker名称:stupidfish/emaildo 绕过cdn功能未打包
