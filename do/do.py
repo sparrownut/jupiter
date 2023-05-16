@@ -87,6 +87,7 @@ def doAuthedCommand(sender, body: str):
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
                 send_email(sender, ret2, "公司的资产结果")
+                CDLA = False
         if 'bypasscdn\n' in body:
             if body.count("\n") > 1:
                 send_email(sender, "你输入的太多了\n格式为:\nbypasscdn\nhttps://www.baidu.com/", "bypasscdn-错误提示")
