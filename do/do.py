@@ -83,7 +83,7 @@ def doAuthedCommand(sender, body: str):
                 # 域名找资产
                 shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
                 shell('mv company/outs/output.txt fofasearch/list')  # 域名列表复制过来
-                setPrefixAndSuffix('fofasearch/list')  # 域名列表解析为可fofax搜索的格式
+                setPrefixAndSuffix('fofasearch/list',suffix="")  # 域名列表解析为可fofax搜索的格式
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
                 send_email(sender, ret2, "公司的资产结果")
