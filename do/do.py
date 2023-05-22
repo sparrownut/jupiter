@@ -135,7 +135,7 @@ def doAuthedCommand(sender, body: str):
                        "您输入的内容被当作DomainCrawler(DC)处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
                            b64FileContent, TmpFileName),
                        subject="自动处理 DomainCrawler")
-            ret = shell("cd domaincrawler && rm -rf tmp.zip && chmod +x DC && ./DC -f " + FileNameRaw + " && cd ..")
+            ret = shell("cd domaincrawler && rm -rf tmp.zip && rm -rf *.csv && chmod +x DC && ./DC -f " + FileNameRaw + " && cd ..")
             shell("cd domaincrawler && zip -r tmp.zip . && cd ..")
             send_email_with_attachment(sender, ret, 'domaincrawler/tmp.zip', "domaincrawler结果")
     except Exception as e:
