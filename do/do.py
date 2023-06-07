@@ -39,7 +39,8 @@ def mark_all_as_read(username, password, imap_server):
     imap.logout()
 
 
-def doAuthedCommand(sender, body: str):
+def doCommand(sender, body: str):
+    global CDLA
     # fliter
     body = body.replace("\n\n", "\n")
     body = body.replace("\r\n", "\n")
@@ -64,7 +65,7 @@ def doAuthedCommand(sender, body: str):
                 status = '成功'
             send_email(sender, "*SQL注入结果\n%s" % ret, subject="SQL INJ 结果%s" % status)
         if 'fofasearch\n' in body:
-            global CDLA
+
             body = body.replace("fofasearch\n", "")
             if not CDLA:
                 CDLA = True
@@ -83,7 +84,6 @@ def doAuthedCommand(sender, body: str):
                 # code block done
                 CDLA = False
         if "company\n" in body:
-            global CDLA
             # 公司名找资产
             if not CDLA:
                 CDLA = True
@@ -176,6 +176,6 @@ def do(sender, body):
             else:
                 send_email(sender, "你是谁?")
         else:
-            doAuthedCommand(sender, body)
+            doCommand(sender, body)
     except Exception as e:
         send_email(sender, e, "错误 - do函数错误捕捉")
