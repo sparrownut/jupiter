@@ -63,6 +63,25 @@ def doAuthedCommand(sender, body: str):
             if "Payload:" in ret:
                 status = '成功'
             send_email(sender, "*SQL注入结果\n%s" % ret, subject="SQL INJ 结果%s" % status)
+        if 'fofasearch\n' in body:
+            global CDLA
+            body = body.replace("fofasearch\n", "")
+            if not CDLA:
+                CDLA = True
+                # code block 域名列表找资产
+                TmpFileName = "fofasearch/list"
+                b64FileContent = base64.b64encode(body.encode("utf-8")).decode("utf-8")
+                send_email(sender,
+                           "您输入的内容被当作 域名列表->资产 自动处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
+                               b64FileContent, TmpFileName), subject="自动处理 域名列表->资产")
+                shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
+                shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
+                setPrefixAndSuffix('fofasearch/list',suffix="")  # 域名列表解析为可fofax搜索的格式
+                shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
+                ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
+                send_email(sender, ret2, "公司的资产结果")
+                # code block done
+                CDLA = False
         if "company\n" in body:
             global CDLA
             # 公司名找资产
@@ -73,7 +92,7 @@ def doAuthedCommand(sender, body: str):
                 TmpFileName = "company/list"
                 b64FileContent = base64.b64encode(body.encode("utf-8")).decode("utf-8")
                 send_email(sender,
-                           "您输入的内容被当作公司名->资产自动处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
+                           "您输入的内容被当作 公司名->资产 自动处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
                                b64FileContent, TmpFileName), subject="自动处理 公司名->资产")
                 shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
                 shell('chmod +x company/autoGetInfo.sh && chmod +x company/ENScan && chmod +x company/getSheet_linux')
