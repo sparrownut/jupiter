@@ -57,8 +57,8 @@ def doCommand(sender, body: str):
                 b64FileContent, TmpFileName), subject="自动处理 sql注入")
             shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
             ret = shell(
-                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --dbs --ignore-code=404&& sqlmap -r %s --batch "
-                "--level=5 --risk=3 "
+                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --dbs --ignore-code=404 --search -T user,order,customer,kehu --stop=10&&sqlmap -r %s --batch "
+                "--level=5 --risk=3 --search -T user,order,customer,kehu --stop=10"
                 "--threads=10 --dbs --force-ssl --ignore-code=404" % (TmpFileName, TmpFileName))
             status = '失败'
             if "Payload:" in ret:
@@ -77,7 +77,7 @@ def doCommand(sender, body: str):
                                b64FileContent, TmpFileName), subject="自动处理 域名列表->资产")
                 shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
                 shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
-                setPrefixAndSuffix('fofasearch/list',suffix="")  # 域名列表解析为可fofax搜索的格式
+                setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
                 send_email(sender, ret2, "公司的资产结果")
@@ -102,7 +102,7 @@ def doCommand(sender, body: str):
                 # 域名找资产
                 shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
                 shell('mv company/outs/output.txt fofasearch/list')  # 域名列表复制过来
-                setPrefixAndSuffix('fofasearch/list',suffix="")  # 域名列表解析为可fofax搜索的格式
+                setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
                 send_email(sender, ret2, "公司的资产结果")
@@ -154,7 +154,8 @@ def doCommand(sender, body: str):
                        "您输入的内容被当作DomainCrawler(DC)处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
                            b64FileContent, TmpFileName),
                        subject="自动处理 DomainCrawler")
-            ret = shell("cd domaincrawler && rm -rf tmp.zip && rm -rf *.csv && chmod +x DC && ./DC -f " + FileNameRaw + " && cd ..")
+            ret = shell(
+                "cd domaincrawler && rm -rf tmp.zip && rm -rf *.csv && chmod +x DC && ./DC -f " + FileNameRaw + " && cd ..")
             shell("cd domaincrawler && zip -r tmp.zip . && cd ..")
             send_email_with_attachment(sender, ret, 'domaincrawler/tmp.zip', "domaincrawler结果")
     except Exception as e:
