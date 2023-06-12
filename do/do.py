@@ -63,6 +63,8 @@ def doCommand(sender, body: str):
                 "--threads=10 --dbs --force-ssl --ignore-code=404" % (TmpFileName, TmpFileName))
             ret2 = shell(f'sqlmap -r {TmpFileName} --batch --count --ignore-code=404 --threads=10')
             ret3 = shell(f'sqlmap -r {TmpFileName} --batch --count --force-ssl --ignore-code=404 --threads=10')
+            ret += ret2
+            ret += ret3
             status = '失败'
             if "Payload:" in ret:
                 status = '成功'
