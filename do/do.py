@@ -81,10 +81,11 @@ def doCommand(sender, body: str):
                                b64FileContent, TmpFileName), subject="自动处理 域名列表->资产")
                 shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
                 shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
-                setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
+                # setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
-                send_email(sender, ret2, "公司的资产结果")
+                send_email(sender, ret2, "公司的资产结果文字版")
+                send_email_with_attachment(sender,'公司的资产结果文件','fofasearch/weak_website.csv','公司的资产结果文件版')
                 # code block done
                 CDLA = False
         if "company\n" in body:
