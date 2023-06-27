@@ -1,8 +1,8 @@
 # 邮箱账号密码
 
 CDLA = False  # companyDoingLockerActived
-username = '2155185732@qq.com'
-password = 'ryezqcfcorhheaef'
+username = '2928109164@qq.com'
+password = 'xkjwcmoppfxqdgea'
 AuthedUserList = []
 
 
