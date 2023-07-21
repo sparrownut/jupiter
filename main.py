@@ -65,7 +65,9 @@ if __name__ == '__main__':
                                     # 调用do函数并传递发件人和邮件内容参数
                                     threading.Thread(target=do, args=(sender, body,)).start()
                     except Exception as e:
+                        mark_all_as_read(username, password, "imap.qq.com")
                         traceback.print_exception(e)
+                        time.sleep(5)
                 except Exception as e:
                     mark_all_as_read(username, password, "imap.qq.com")
                     if "FETCH" not in str(e):

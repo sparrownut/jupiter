@@ -2,7 +2,7 @@
 
 CDLA = False  # companyDoingLockerActived
 username = '2928109164@qq.com'
-password = 'xkjwcmoppfxqdgea'
+password = 'xrtgykeujfzidfij'
 AuthedUserList = []
 
 
