@@ -34,7 +34,7 @@ if __name__ == '__main__':
                     messages = messages[0].split(b' ')
                     sender = ""
                     try:
-                        with eventlet.Timeout(5, False):
+                        with eventlet.Timeout(10, False):
                             # 循环处理每个未读邮件
                             # print(messages)
                             if messages[0] != b'':
@@ -67,13 +67,20 @@ if __name__ == '__main__':
                     except Exception as e:
                         mark_all_as_read(username, password, "imap.qq.com")
                         traceback.print_exception(e)
-                        time.sleep(5)
+
+                        imap.logout() # 重连
+                        imap = imaplib.IMAP4_SSL('imap.qq.com')
+                        imap.login(username, password)
                 except Exception as e:
                     mark_all_as_read(username, password, "imap.qq.com")
                     if "FETCH" not in str(e):
                         traceback.print_exception(e)
 
-                time.sleep(5)
+                        imap.logout() # 重连
+                        imap = imaplib.IMAP4_SSL('imap.qq.com')
+                        imap.login(username, password)
+
+                time.sleep(10)
                 # 等待新邮件
                 # imap.idle()
 
