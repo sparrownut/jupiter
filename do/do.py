@@ -110,7 +110,9 @@ def doCommand(sender, body: str):
                 setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
                 shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
                 ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
-                send_email(sender, ret2, "公司的资产结果")
+                send_email(sender, ret2, "公司的资产结果 文字版")
+                send_email_with_attachment(sender, '公司的资产结果文件', 'fofasearch/weak_website.csv',
+                                           '公司的资产结果文件版')
                 CDLA = False
         if 'bypasscdn\n' in body:
             if body.count("\n") > 1:
