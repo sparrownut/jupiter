@@ -4,14 +4,14 @@ echo -e "\e[32m复制 getSheet_linux 到输出目录...\e[0m"
 cp getSheet_linux outs
 
 echo -e "\e[34m启动 mitmproxy...\e[0m"
-sudo docker run --rm -itd -p 8080:8080 mitmproxy/mitmproxy mitmproxy
+docker run --rm -itd -p 8080:8080 mitmproxy/mitmproxy mitmproxy
 
 echo -e "\e[34m下载 mitmproxy 证书...\e[0m"
 curl -x http://localhost:8080 http://mitm.it/cert/pem -o mitmproxy-ca-cert.pem
 
 echo -e "\e[34m安装 mitmproxy 证书...\e[0m"
-sudo cp mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
-sudo update-ca-certificates
+cp mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
+update-ca-certificates
 
 echo -e "\e[32m删除临时证书文件...\e[0m"
 rm -rf mitmproxy-ca-cert.pem
