@@ -3,8 +3,12 @@ rm -rf outs/*
 echo -e "\e[32m复制 getSheet_linux 到输出目录...\e[0m"
 cp getSheet_linux outs
 
+echo -e "\e[34m杀掉 8080占用进程...\e[0m"
+pkill -f mitmproxy
+pkill -f mitmdump
 echo -e "\e[34m启动 mitmproxy...\e[0m"
-docker run --rm -itd -p 8080:8080 mitmproxy/mitmproxy mitmproxy
+pip3 install mitmproxy
+mitmdump -p 8080&
 
 echo -e "\e[34m下载 mitmproxy 证书...\e[0m"
 curl -x http://localhost:8080 http://mitm.it/cert/pem -o mitmproxy-ca-cert.pem

@@ -1,6 +1,7 @@
 import base64
 import imaplib
 import subprocess
+import traceback
 
 from Global import username, password, AddToAuthedUserList, IsInAuthedUserList
 from emailsender.sender import send_email, send_email_with_attachment
@@ -92,27 +93,30 @@ def doCommand(sender, body: str):
             # 公司名找资产
             if not CDLA:
                 CDLA = True
-                body = body.replace("company\n", "")
+                try:
+                    body = body.replace("company\n", "")
 
-                TmpFileName = "company/list"
-                b64FileContent = base64.b64encode(body.encode("utf-8")).decode("utf-8")
-                send_email(sender,
-                           "您输入的内容被当作 公司名->资产 自动处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
-                               b64FileContent, TmpFileName), subject="自动处理 公司名->资产")
-                shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
-                shell('chmod +x company/autoGetInfo.sh && chmod +x company/ENScan && chmod +x company/getSheet_linux')
-                shell('cd company/ && ./autoGetInfo.sh && cd ..')  # 运行获取
-                domain_list = shell('cat company/outs/output.txt')
-                send_email(sender, "域名列表如下%s" % domain_list, subject="域名列表 下一步 -> 获取资产")
-                # 域名找资产
-                shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
-                shell('mv company/outs/output.txt fofasearch/list')  # 域名列表复制过来
-                setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
-                shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
-                ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
-                send_email(sender, ret2, "公司的资产结果 文字版")
-                send_email_with_attachment(sender, '公司的资产结果文件', 'fofasearch/weak_website.csv',
-                                           '公司的资产结果文件版')
+                    TmpFileName = "company/list"
+                    b64FileContent = base64.b64encode(body.encode("utf-8")).decode("utf-8")
+                    send_email(sender,
+                               "您输入的内容被当作 公司名->资产 自动处理，结果会稍后返回到此邮箱\n B64FC:%s\nTMPFN:%s" % (
+                                   b64FileContent, TmpFileName), subject="自动处理 公司名->资产")
+                    shell('echo "%s" | base64 -d > %s' % (b64FileContent, TmpFileName))
+                    shell('chmod +x company/autoGetInfo.sh && chmod +x company/ENScan && chmod +x company/getSheet_linux')
+                    shell('cd company/ && ./autoGetInfo.sh && cd ..')  # 运行获取
+                    domain_list = shell('cat company/outs/output.txt')
+                    send_email(sender, "域名列表如下%s" % domain_list, subject="域名列表 下一步 -> 获取资产")
+                    # 域名找资产
+                    shell('chmod +x fofasearch/search.sh && chmod +x fofasearch/run.sh')
+                    shell('mv company/outs/output.txt fofasearch/list')  # 域名列表复制过来
+                    setPrefixAndSuffix('fofasearch/list', suffix="")  # 域名列表解析为可fofax搜索的格式
+                    shell('cd fofasearch/ && ./run.sh && cd ..')  # 执行fofax搜索
+                    ret2 = shell("cat fofasearch/weak_website.csv")  # 获取fofax结果
+                    send_email(sender, ret2, "公司的资产结果 文字版")
+                    send_email_with_attachment(sender, '公司的资产结果文件', 'fofasearch/weak_website.csv',
+                                               '公司的资产结果文件版')
+                except Exception as e:
+                    traceback.print_exception(e)
                 CDLA = False
         if 'bypasscdn\n' in body:
             if body.count("\n") > 1:
