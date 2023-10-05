@@ -3,12 +3,12 @@ rm -rf outs/*
 echo -e "\e[32m复制 getSheet_linux 到输出目录...\e[0m"
 cp getSheet_linux outs
 
-echo -e "\e[34m杀掉 8080占用进程...\e[0m"
-pkill -f mitmproxy
-pkill -f mitmdump
 echo -e "\e[34m启动 mitmproxy...\e[0m"
 pip3 install mitmproxy
 mitmdump -p 8080&
+
+echo -e "\e[33m预热5秒...\e[0m"
+sleep 5
 
 echo -e "\e[34m下载 mitmproxy 证书...\e[0m"
 curl -x http://localhost:8080 http://mitm.it/cert/pem -o mitmproxy-ca-cert.pem
@@ -20,8 +20,7 @@ update-ca-certificates
 echo -e "\e[32m删除临时证书文件...\e[0m"
 rm -rf mitmproxy-ca-cert.pem
 
-echo -e "\e[33m预热10秒...\e[0m"
-sleep 10
+
 
 echo -e "\e[33m开始运行 ENScan...\e[0m"
 for it in `cat list`
@@ -34,6 +33,10 @@ echo -e "\e[33m生成报告...\e[0m"
 cd outs
 ./getSheet_linux
 cat output.txt
+
+echo -e "\e[34m杀掉 8080占用进程...\e[0m"
+pkill -f mitmproxy
+pkill -f mitmdump
 
 echo -e "\e[32m脚本执行完毕！\e[0m"
 cd ..
